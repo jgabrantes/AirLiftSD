@@ -28,5 +28,25 @@ public class Passenger {
         this.name = name;
     }
     
+    public PassengerState getState() {
+        return state;
+    }
+
+    public void setState(PassengerState state) {
+        this.state = state;
+    }
     
+    public void run() {
+        System.out.println("Passenger start:");
+    	
+        setState(state.GOING_TO_AIRPORT);
+        depAirport.waitInQueue();
+        setState(state.IN_QUEUE);
+        depAirport.showDocuments();
+        depAirport.boardThePlane();
+        setState(state.IN_FLIGHT);
+        plane.waitForEnfOfFlight();
+        plane.leaveThePlane();
+        setState(state.AT_DESTINATION);
+    }
 }
