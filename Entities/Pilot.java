@@ -4,49 +4,63 @@ import SharedRegions.DepartureAirport;
 import SharedRegions.DestinationAirport;
 import SharedRegions.Plane;
 
-public class Pilot {
-    private int id;
-    private DepartureAirport depAirport;
+public class Pilot extends Thread {
+    private   int id;
+    private  DepartureAirport depAirport;
     private DestinationAirport destAirport;
     private Plane  plane;
-    private PilotState state;
+    private  PilotState state;
+    
+    
     public Pilot(int id, DepartureAirport depAirport, DestinationAirport destAirport, Plane plane) {
         this.id = id;
         this.depAirport = depAirport;
         this.destAirport = destAirport;
         this.plane = plane;
+        
     }
-    public int getId() {
+
+    /**
+     *
+     */
+    @Override
+    public void run() {
+        //System.out.println("Pilot start:");--->Pass2MAIN
+        
+        depAirport.informPlaneReadyForBoarding();
+        
+        depAirport.waitForAllInBoard();
+        
+        plane.flyToDestinationPoint();
+        
+        destAirport.announceArrival();
+        
+        plane.flyToDeparturePoint();
+        
+        depAirport.parkAtTransfeGate();
+            
+        
+    }
+    
+    /**
+     *
+     * @return
+     */
+    public int getPilotId() {
         return id;
     }
-    public void setId(int id) {
+    public void setPilotId(int id) {
         this.id = id;
     }
     
-    public PilotState getState() {
+    public PilotState getPilotState() {
         return state;
     }
 
-    public void setState(PilotState state) {
+    public void setPilotState(PilotState state) {
         this.state = state;
     }
     
-     public void run() {
-        System.out.println("Pilot start:");
-        while(depAirport.waitForNextFlight()){
-            setState(state.AT_TRANFER_GATE);
-            depAirport.informPlaneReadyForBoarding();
-            setState(state.READY_FOR_BOARDING);
-            depAirport.waitForAllInBoard();
-            setState(state.WAIT_FOR_BOARDING);
-            plane.flyToDestinationPoint();
-            setState(state.FLYING_FORWARD);
-            destAirport.announceArrival();
-            setState(state.DEBOARDING);
-            plane.flyToDeparturePoint();
-            setState(state.FLYING_BACK);
-            depAirport.parkAtTransfeGate();
-            
-        }
-    }
+    
+    
 }

@@ -20,4 +20,10 @@ public enum PilotState {
     private PilotState(String description){
         this.state = description;
     }
+
+    @Override
+    public String toString() {
+        return "PilotState{" + "state=" + state + '}';
+    }
+    
 }

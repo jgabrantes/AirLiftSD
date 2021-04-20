@@ -10,5 +10,13 @@ package SharedRegions;
  * @author jgabrantes
  */
 public class DestinationAirport {
+
+    public void announceArrival() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public void leaveThePlane() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
 }

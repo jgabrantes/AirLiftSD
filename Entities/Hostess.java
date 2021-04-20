@@ -1,49 +1,49 @@
 package Entities;
+import MainProgram.Parameters;
 import SharedRegions.*;
 
-public class Hostess {
+public class Hostess extends Thread {
     private int id;
-    private DepartureAirport depAirport;
-    private DestinationAirport destAirport;
-    private Plane  plane;
+    private final DepartureAirport depAirport;
+    private final Plane  plane;
     private HostessState state;
-    public Hostess(int id, DepartureAirport depAirport, DestinationAirport destAirport, Plane plane) {
+    public Hostess(int id, DepartureAirport depAirport, Plane plane) {
         this.id = id;
         this.depAirport = depAirport;
-        this.destAirport = destAirport;
         this.plane = plane;
     }
-    public int getId() {
+    public int getHostessId() {
         return id;
     }
-    public void setId(int id) {
+    public void setHostessId(int id) {
         this.id = id;
     }
 
-    public HostessState getState() {
+    public HostessState getHostessState() {
         return state;
     }
 
-    public void setState(HostessState state) {
+    public void setHostessState(HostessState state) {
         this.state = state;
     }
     
+    int nPassenger = Parameters.N_PASSENGERS;
+    int boarded = 0;
+    int queued;
+    
     public void Run(){
-        while(depAirport.waitForNextFlight()){
-            setState(state.WAIT_FOR_FLIGHT);
-            depAirport.prepareForPassBoarding();
-            
-            while(depAirport.waitInQueue()){
-                setState(state.WAIT_FOR_PASSENGER);
+        while(nPassenger>= 0){
+            queued = depAirport.prepareForPassBoarding();
+            while(nPassenger > 0  && (queued > 0 && boarded < Parameters.MAX || nPassenger >= Parameters.MIN && boarded <Parameters.MIN || nPassenger > 0 && nPassenger < Parameters.MIN)){
                 depAirport.checkDocuments();
-                setState(state.CHECK_PASSENGER);
-                depAirport.waitForNextPassenger();
-            }
-            depAirport.informPlaneReatyToTakeOff();
-            setState(state.READY_TO_FLY);
+                boarded++;
+                queued = depAirport.waitForNextPassenger();
+            } 
+            nPassenger = nPassenger - boarded;
+            plane.informPlaneReadyToTakeoff();
             depAirport.waitForNextFlight();
-        }
         
-    }
+        }
  
+    }
 }
