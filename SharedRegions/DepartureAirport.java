@@ -15,7 +15,7 @@ import java.util.logging.Logger;
 public class DepartureAirport {
     private int passengerCounter;
     private Queue<Integer> passengerQueue;
-    private boolean readyToBoard,inQueue,checkDocs,docShown,board;
+    private boolean readyToBoard,inQueue,checkDocs,docShown,board, readyToFly;
 
     public synchronized void waitForNextFlight() {
         Hostess hostess = (Hostess)Thread.currentThread();
@@ -41,8 +41,13 @@ public class DepartureAirport {
     public  synchronized  void waitForAllInBoard() {
         Pilot pilot = ((Pilot)Thread.currentThread());
         pilot.setPilotState(PilotState.WAIT_FOR_BOARDING);
-        
-        //while()
+        while(!readyToFly){
+            try{
+                wait();
+            }catch(InterruptedException e){
+                System.exit(1);
+            }
+        }
     }
 
     public  synchronized  void parkAtTransfeGate() {
@@ -57,9 +62,8 @@ public class DepartureAirport {
         
     }
 
-    public  synchronized  int prepareForPassBoarding() {
-        Hostess hostess = ((Hostess)Thread.currentThread());
-        hostess.setHostessState(HostessState.WAIT_FOR_PASSENGER);
+    public  synchronized  int prepareForPassBoarding() {      
+       
         while(!inQueue){
             try{
                 wait();
@@ -67,6 +71,8 @@ public class DepartureAirport {
               System.exit(1);
             }
         }
+        Hostess hostess = ((Hostess)Thread.currentThread());
+        hostess.setHostessState(HostessState.WAIT_FOR_PASSENGER);
         return passengerQueue.size();
     }
 
@@ -99,7 +105,9 @@ public class DepartureAirport {
     }
 
     public synchronized void informPlaneReatyToTakeOff() {
-        
+        Hostess hostess = ((Hostess)Thread.currentThread());
+        hostess.setHostessState(HostessState.READY_TO_FLY);
+        readyToFly= true;
     }
 
     public  synchronized void showDocuments() {
@@ -119,6 +127,16 @@ public class DepartureAirport {
 
     public synchronized void boardThePlane() {
         
+       while(!board){
+           try{
+               wait();
+           }catch(InterruptedException e){
+               System.exit(1);
+           }
+       }
+       Passenger passenger = ((Passenger)Thread.currentThread());
+       passenger.setPassengerState(PassengerState.IN_FLIGHT);
+       
     }
 
     public synchronized void travelToAirport() {
