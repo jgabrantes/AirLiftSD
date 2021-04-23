@@ -5,18 +5,37 @@
  */
 package SharedRegions;
 
+import Entities.Passenger;
+import Entities.PassengerState;
+import Entities.Pilot;
+import Entities.PilotState;
+
 /**
  *
  * @author jgabrantes
  */
 public class DestinationAirport {
-
-    public void announceArrival() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    public void leaveThePlane() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
     
+    private int passengersLeft= 0;
+    
+       
+        
+    public synchronized void leaveThePlane() {
+        Passenger passenger =((Passenger)Thread.currentThread());
+        passengersLeft +=1;
+        System.out.println("Passenger:"+passenger.getPassengerId()+" left the plane");
+        passenger.setPassengerState(PassengerState.AT_DESTINATION);
+        notifyAll();
+        
+    }
+     public synchronized void waitForAllPassengersToLeave(int numPassengers){
+         System.out.println("Pilot:waiting for all passengers to leave");
+         while(numPassengers != passengersLeft){
+             try{
+                 wait();
+             }catch(InterruptedException e){
+                 System.exit(1);
+             }
+         }
+     }
 }

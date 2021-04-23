@@ -1,5 +1,7 @@
 package Entities;
 import SharedRegions.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Passenger extends Thread {
     
@@ -28,10 +30,12 @@ public class Passenger extends Thread {
     public void setPassengerState(PassengerState state) {
         this.state = state;
     }
-    
+    @Override
     public void run() {
        depAirport.travelToAirport();
-       
+        try {
+            this.sleep((long)(Math.random() * 1000));
+            } catch (InterruptedException ex) {}
        depAirport.waitInQueue();
        
        depAirport.showDocuments();

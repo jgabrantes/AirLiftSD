@@ -1,4 +1,4 @@
-package Entities;
+    package Entities;
 import MainProgram.Parameters;
 import SharedRegions.*;
 
@@ -31,7 +31,9 @@ public class Hostess extends Thread {
     int boarded = 0;
     int queued;
     
-    public void Run(){
+    @Override
+    public void run(){
+        
         while(nPassenger>= 0){
             queued = depAirport.prepareForPassBoarding();
             while(nPassenger > 0  && (queued > 0 && boarded < Parameters.MAX || nPassenger >= Parameters.MIN && boarded <Parameters.MIN || nPassenger > 0 && nPassenger < Parameters.MIN)){
@@ -40,9 +42,8 @@ public class Hostess extends Thread {
                 queued = depAirport.waitForNextPassenger();
             } 
             nPassenger = nPassenger - boarded;
-            plane.informPlaneReadyToTakeoff();
-            depAirport.waitForNextFlight();
-        
+            plane.informPlaneReadyToTakeoff(boarded);
+            depAirport.waitForNextFlight();         
         }
  
     }

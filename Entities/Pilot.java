@@ -1,5 +1,6 @@
 package Entities;
 
+import MainProgram.Parameters;
 import SharedRegions.DepartureAirport;
 import SharedRegions.DestinationAirport;
 import SharedRegions.Plane;
@@ -10,7 +11,7 @@ public class Pilot extends Thread {
     private DestinationAirport destAirport;
     private Plane  plane;
     private  PilotState state;
-    
+    private int nPassengers = Parameters.N_PASSENGERS,  passengersMoved;
     
     public Pilot(int id, DepartureAirport depAirport, DestinationAirport destAirport, Plane plane) {
         this.id = id;
@@ -25,20 +26,30 @@ public class Pilot extends Thread {
      */
     @Override
     public void run() {
-        //System.out.println("Pilot start:");--->Pass2MAIN
         
-        depAirport.informPlaneReadyForBoarding();
+        while(nPassengers !=  passengersMoved){
+            System.out.println("AQUIIIIIIIIIIIII->"+passengersMoved);
+            depAirport.informPlaneReadyForBoarding();
         
-        depAirport.waitForAllInBoard();
+            int boardedPassengers = plane.waitForAllInBoard();
+            passengersMoved += boardedPassengers;
+            plane.flyToDestinationPoint();
+            try {
+                this.sleep((long)(Math.random() * 1000));
+            } catch (InterruptedException ex) {}
         
-        plane.flyToDestinationPoint();
+            plane.announceArrival();
         
-        destAirport.announceArrival();
+            destAirport.waitForAllPassengersToLeave(boardedPassengers);
         
-        plane.flyToDeparturePoint();
+            plane.flyToDeparturePoint();        
         
-        depAirport.parkAtTransfeGate();
+        
+            depAirport.parkAtTransfeGate();
             
+        }
+        
+        
         
     }
     
