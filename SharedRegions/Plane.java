@@ -53,6 +53,7 @@ public class Plane {
     }
     
     public synchronized void flyToDestinationPoint() {
+       
         System.out.println("Pilot: LIIIFT OOOOF");           
         Pilot pilot =((Pilot)Thread.currentThread());
         pilot.setPilotState(PilotState.FLYING_FORWARD);
@@ -61,11 +62,12 @@ public class Plane {
         System.out.println("Passangers able to deboard");
         Pilot pilot =((Pilot)Thread.currentThread());
         pilot.setPilotState(PilotState.DEBOARDING);
-        arrivalAnnounced = true;
+        arrivalAnnounced= true;
         notifyAll();      
     } 
     
     public synchronized void waitForEndOfFlight() {
+       
        Passenger passenger = ((Passenger)Thread.currentThread());
        System.out.println("Passenger:"+ passenger.getPassengerId()+" waiting for the end of flight");        
        while(!arrivalAnnounced){
@@ -76,11 +78,11 @@ public class Plane {
                
            }
        }
-       arrivalAnnounced = false;
-       
+              
     }
      
     public synchronized void flyToDeparturePoint() {
+        arrivalAnnounced = false;
         System.out.println("Pilot:flying back");
         Pilot pilot = ((Pilot)Thread.currentThread());
         pilot.setPilotState(PilotState.FLYING_BACK);      

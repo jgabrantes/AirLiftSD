@@ -33,18 +33,22 @@ public class Hostess extends Thread {
     
     @Override
     public void run(){
-        
-        while(nPassenger>= 0){
+        System.out.println("Hostess:Started coming");
+        while(nPassenger> 0){            
             queued = depAirport.prepareForPassBoarding();
-            while(nPassenger > 0  && (queued > 0 && boarded < Parameters.MAX || nPassenger >= Parameters.MIN && boarded <Parameters.MIN || nPassenger > 0 && nPassenger < Parameters.MIN)){
+            
+            while((queued > 0 && boarded < Parameters.MAX || nPassenger >= Parameters.MIN && boarded <Parameters.MIN || nPassenger > 0 && nPassenger < Parameters.MIN) && nPassenger>0){
                 depAirport.checkDocuments();
                 boarded++;
-                queued = depAirport.waitForNextPassenger();
-            } 
+                queued = depAirport.waitForNextPassenger();               
+            }        
+            
             nPassenger = nPassenger - boarded;
+            System.out.println("QUANTOS FALTAM???????_________------->"+nPassenger);
             plane.informPlaneReadyToTakeoff(boarded);
+            boarded = 0;
             depAirport.waitForNextFlight();         
         }
- 
+        System.out.println("Hostess::->FIM");
     }
 }

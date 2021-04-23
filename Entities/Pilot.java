@@ -11,7 +11,7 @@ public class Pilot extends Thread {
     private DestinationAirport destAirport;
     private Plane  plane;
     private  PilotState state;
-    private int nPassengers = Parameters.N_PASSENGERS,  passengersMoved;
+    private int nPassengers = Parameters.N_PASSENGERS,  passengersMoved = 0;
     
     public Pilot(int id, DepartureAirport depAirport, DestinationAirport destAirport, Plane plane) {
         this.id = id;
@@ -27,11 +27,12 @@ public class Pilot extends Thread {
     @Override
     public void run() {
         
-        while(nPassengers !=  passengersMoved){
-            System.out.println("AQUIIIIIIIIIIIII->"+passengersMoved);
+        while(passengersMoved < nPassengers){
+            System.out.println("CYYYYYYYYYYYYYYCLLLLLLLLLLLLLLEEEEEEEEEE:"+passengersMoved);
             depAirport.informPlaneReadyForBoarding();
-        
+                       
             int boardedPassengers = plane.waitForAllInBoard();
+            System.out.println("BOARDED PASSENGERS:"+boardedPassengers);
             passengersMoved += boardedPassengers;
             plane.flyToDestinationPoint();
             try {
@@ -41,14 +42,14 @@ public class Pilot extends Thread {
             plane.announceArrival();
         
             destAirport.waitForAllPassengersToLeave(boardedPassengers);
-        
+            boardedPassengers = 0;
             plane.flyToDeparturePoint();        
         
         
             depAirport.parkAtTransfeGate();
             
         }
-        
+        System.out.println("FIM");
         
         
     }

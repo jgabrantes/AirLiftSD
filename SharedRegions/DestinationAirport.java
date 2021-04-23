@@ -25,11 +25,13 @@ public class DestinationAirport {
         passengersLeft +=1;
         System.out.println("Passenger:"+passenger.getPassengerId()+" left the plane");
         passenger.setPassengerState(PassengerState.AT_DESTINATION);
+        System.out.println("PassengersLeft---------->"+passengersLeft+"<---------------------------------");
         notifyAll();
         
     }
      public synchronized void waitForAllPassengersToLeave(int numPassengers){
          System.out.println("Pilot:waiting for all passengers to leave");
+         
          while(numPassengers != passengersLeft){
              try{
                  wait();
@@ -37,5 +39,7 @@ public class DestinationAirport {
                  System.exit(1);
              }
          }
+        
+         passengersLeft = 0;
      }
 }
