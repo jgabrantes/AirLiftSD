@@ -45,11 +45,11 @@ public class Hostess extends Thread {
             }        
             
             //nPassenger = nPassenger - boarded;
-            System.out.println("QUANTOS FALTAM???????_________------->"+nPassenger);
+            System.out.println("PassengersLeft: "+nPassenger);
             plane.informPlaneReadyToTakeoff(boarded);
             boarded = 0;
             depAirport.waitForNextFlight();         
         }
-        System.out.println("Hostess::->FIM");
+       
     }
 }

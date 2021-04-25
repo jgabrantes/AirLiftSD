@@ -11,22 +11,20 @@ import Entities.PilotState;
 import MainProgram.Parameters;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 /**
  *
  * @author jgabrantes
  */
 public class Repository implements RepositoryInterface {
-    private File file;
-    private PrintWriter pw;
+    
+    
     private int inQueue, inPlane, outPlane, flightNum;
     private int []passengerIds;
     private List<Integer> flights = new ArrayList<Integer>();

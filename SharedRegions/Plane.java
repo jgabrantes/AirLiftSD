@@ -8,7 +8,6 @@ package SharedRegions;
 import Entities.Hostess;
 import Entities.HostessState;
 import Entities.Passenger;
-import Entities.PassengerState;
 import Entities.Pilot;
 import Entities.PilotState;
 
@@ -59,7 +58,7 @@ public class Plane {
     
     public synchronized void flyToDestinationPoint() {
        
-        System.out.println("Pilot: LIIIFT OOOOF");           
+        System.out.println("Pilot: LIFT OF");           
         Pilot pilot =((Pilot)Thread.currentThread());
         pilot.setPilotState(PilotState.FLYING_FORWARD);
         repo.updatePilotState(PilotState.FLYING_FORWARD);

@@ -7,8 +7,7 @@ package SharedRegions;
 
 import Entities.Passenger;
 import Entities.PassengerState;
-import Entities.Pilot;
-import Entities.PilotState;
+
 
 /**
  *

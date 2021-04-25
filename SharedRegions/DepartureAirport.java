@@ -53,12 +53,12 @@ public class DepartureAirport {
                 System.out.println("Hostess:Waiting for passengers");
                 System.exit(1);
             }
-        }
-        readyToBoard = false;       
-       
+        }       
+        readyToBoard = false;  
         Hostess hostess = ((Hostess)Thread.currentThread());
         hostess.setHostessState(HostessState.WAIT_FOR_PASSENGER);
         repo.updateHostessState(HostessState.WAIT_FOR_PASSENGER);
+             
         return passengerQueue.size();
     }
     
@@ -67,10 +67,12 @@ public class DepartureAirport {
         Passenger passenger = ((Passenger)Thread.currentThread());
         System.out.println("Passenger:"+passenger.getPassengerId()+" has arrived");        
         System.out.println("Passanger:"+passenger.getPassengerId()+" at queue");
+        
+        passengerQueue.add(passenger);  
         passenger.setPassengerState(PassengerState.IN_QUEUE); 
         repo.inQueue();
         repo.updatePassengerState(passenger.getPassengerId(), PassengerState.IN_QUEUE);
-        passengerQueue.add(passenger);         
+           
         notifyAll();
     }    
     
@@ -85,11 +87,13 @@ public class DepartureAirport {
             }
         }
         System.out.println("Hostess:  ready to check documents ");
+        
+        Hostess hostess = ((Hostess)Thread.currentThread());  
+        
         Passenger checkedPassenger =passengerQueue.remove(); 
-        Hostess hostess = ((Hostess)Thread.currentThread());
-        hostess.setHostessState(HostessState.CHECK_PASSENGER);
         repo.outQueue();
         repo.passengerChecked(checkedPassenger.getPassengerId());
+        hostess.setHostessState(HostessState.CHECK_PASSENGER);
         repo.updateHostessState(HostessState.CHECK_PASSENGER);
         checkDocs = true;
         notifyAll();        
@@ -113,11 +117,11 @@ public class DepartureAirport {
                 System.exit(1);
             }
         }
-        docsShown = true;
+        checkDocs = false; 
+       
         System.out.println("Passanger:"+passenger.getPassengerId()+"showing documents");
         System.out.println("Passenger:"+passenger.getPassengerId()+"Waiting to have permission to board");
-        checkDocs = false;    
-        
+        docsShown = true;   
         notifyAll();
     }
 
@@ -131,11 +135,12 @@ public class DepartureAirport {
             }
         }
         docsShown = false;
+        
         Hostess hostess = ((Hostess)Thread.currentThread());
         hostess.setHostessState(HostessState.WAIT_FOR_PASSENGER);
         repo.updateHostessState(HostessState.WAIT_FOR_PASSENGER);
         System.out.println("Hostess:Passanger ready to board");
-        System.out.println("PassengerQUEUE:_______>:"+passengerQueue.size());
+        System.out.println("PassengerQUEUE_SIZE-->:"+passengerQueue.size());
         board = true;
         notifyAll(); 
         return passengerQueue.size();
@@ -158,10 +163,10 @@ public class DepartureAirport {
                 System.exit(1);
             }
         }
+        board= false;  
         System.out.println("Passenger:"+passenger.getPassengerId()+" boarding the plane");
-        board= false;        
-        passenger.setPassengerState(PassengerState.IN_FLIGHT);
         repo.inPlane();
+        passenger.setPassengerState(PassengerState.IN_FLIGHT);        
         repo.updatePassengerState(passenger.getPassengerId(), PassengerState.IN_FLIGHT);
      }
     

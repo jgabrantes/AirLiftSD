@@ -28,7 +28,7 @@ public class Pilot extends Thread {
     public void run() {
         
         while(passengersMoved < nPassengers){
-            System.out.println("CYYYYYYYYYYYYYYCLLLLLLLLLLLLLLEEEEEEEEEE:"+passengersMoved);
+            System.out.println("PassengersTransported::"+passengersMoved);
 
             depAirport.parkAtTransfeGate();
             depAirport.informPlaneReadyForBoarding();
@@ -48,8 +48,7 @@ public class Pilot extends Thread {
             plane.flyToDeparturePoint();  
         }
         depAirport.parkAtTransfeGate();
-        System.out.println("FIM");
-        
+       
         
     }
     
