@@ -10,10 +10,10 @@ package Entities;
  * @author jgabrantes
  */
 public enum PassengerState {
-    GOING_TO_AIRPORT ("GTA"),
-    IN_QUEUE ("IQ"),
-    IN_FLIGHT ("IF"),
-    AT_DESTINATION ("AD");
+    GOING_TO_AIRPORT ("GTAP"),
+    IN_QUEUE ("INQE"),
+    IN_FLIGHT ("INFL"),
+    AT_DESTINATION ("ATDS");
 
     private final String state;
 

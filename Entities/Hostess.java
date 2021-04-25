@@ -38,12 +38,13 @@ public class Hostess extends Thread {
             queued = depAirport.prepareForPassBoarding();
             
             while((queued > 0 && boarded < Parameters.MAX || nPassenger >= Parameters.MIN && boarded <Parameters.MIN || nPassenger > 0 && nPassenger < Parameters.MIN) && nPassenger>0){
-                depAirport.checkDocuments();
+                depAirport.checkDocuments();                
+                queued = depAirport.waitForNextPassenger();  
                 boarded++;
-                queued = depAirport.waitForNextPassenger();               
+                nPassenger--;
             }        
             
-            nPassenger = nPassenger - boarded;
+            //nPassenger = nPassenger - boarded;
             System.out.println("QUANTOS FALTAM???????_________------->"+nPassenger);
             plane.informPlaneReadyToTakeoff(boarded);
             boarded = 0;

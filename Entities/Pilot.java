@@ -29,6 +29,8 @@ public class Pilot extends Thread {
         
         while(passengersMoved < nPassengers){
             System.out.println("CYYYYYYYYYYYYYYCLLLLLLLLLLLLLLEEEEEEEEEE:"+passengersMoved);
+
+            depAirport.parkAtTransfeGate();
             depAirport.informPlaneReadyForBoarding();
                        
             int boardedPassengers = plane.waitForAllInBoard();
@@ -43,12 +45,9 @@ public class Pilot extends Thread {
         
             destAirport.waitForAllPassengersToLeave(boardedPassengers);
             boardedPassengers = 0;
-            plane.flyToDeparturePoint();        
-        
-        
-            depAirport.parkAtTransfeGate();
-            
+            plane.flyToDeparturePoint();  
         }
+        depAirport.parkAtTransfeGate();
         System.out.println("FIM");
         
         

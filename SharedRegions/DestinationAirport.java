@@ -18,13 +18,15 @@ public class DestinationAirport {
     
     private int passengersLeft= 0;
     
-       
+    private RepositoryInterface repo;
         
     public synchronized void leaveThePlane() {
         Passenger passenger =((Passenger)Thread.currentThread());
         passengersLeft +=1;
         System.out.println("Passenger:"+passenger.getPassengerId()+" left the plane");
         passenger.setPassengerState(PassengerState.AT_DESTINATION);
+        repo.outPlane();
+        repo.updatePassengerState(passenger.getPassengerId(), PassengerState.AT_DESTINATION);
         System.out.println("PassengersLeft---------->"+passengersLeft+"<---------------------------------");
         notifyAll();
         
@@ -42,4 +44,8 @@ public class DestinationAirport {
         
          passengersLeft = 0;
      }
+     
+     public synchronized void setRepository(RepositoryInterface repository){
+        this.repo = repository;
+    }
 }

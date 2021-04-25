@@ -19,11 +19,15 @@ import Entities.PilotState;
 public class Plane {
     private boolean  arrivalAnnounced, readyToFly;
     private int passengersBoarded;    
+    private RepositoryInterface repo;
     
     public synchronized void informPlaneReadyToTakeoff(int boarded){
         System.out.println("Hostess: Informing pilot that the plane is ready to take off");
         Hostess hostess = ((Hostess)Thread.currentThread());
+        
         hostess.setHostessState(HostessState.READY_TO_FLY);
+        repo.flightDeparted();
+        repo.updateHostessState(HostessState.READY_TO_FLY);
         passengersBoarded  = boarded;
         readyToFly= true;        
         notifyAll();
@@ -33,6 +37,7 @@ public class Plane {
     {
         Pilot pilot = ((Pilot)Thread.currentThread());
         pilot.setPilotState(PilotState.WAIT_FOR_BOARDING);
+        repo.updatePilotState(PilotState.WAIT_FOR_BOARDING);
         System.out.println("Pilot:waiting  For all in board");
         while(!readyToFly)
         {
@@ -57,11 +62,14 @@ public class Plane {
         System.out.println("Pilot: LIIIFT OOOOF");           
         Pilot pilot =((Pilot)Thread.currentThread());
         pilot.setPilotState(PilotState.FLYING_FORWARD);
+        repo.updatePilotState(PilotState.FLYING_FORWARD);
     }
     public  synchronized void  announceArrival() {
         System.out.println("Passangers able to deboard");
         Pilot pilot =((Pilot)Thread.currentThread());
         pilot.setPilotState(PilotState.DEBOARDING);
+        repo.flightArrived();
+        repo.updatePilotState(PilotState.DEBOARDING);
         arrivalAnnounced= true;
         notifyAll();      
     } 
@@ -85,7 +93,11 @@ public class Plane {
         arrivalAnnounced = false;
         System.out.println("Pilot:flying back");
         Pilot pilot = ((Pilot)Thread.currentThread());
-        pilot.setPilotState(PilotState.FLYING_BACK);      
-            
-    }     
+        pilot.setPilotState(PilotState.FLYING_BACK);   
+        repo.flyingBack();
+        repo.updatePilotState(PilotState.FLYING_BACK);
+    }    
+    public synchronized void setRepository(RepositoryInterface repository){
+        this.repo = repository;
+    }
 }

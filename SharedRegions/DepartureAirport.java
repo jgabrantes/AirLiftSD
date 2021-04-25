@@ -16,7 +16,10 @@ public class DepartureAirport {
     private Queue<Passenger> passengerQueue = new LinkedList<Passenger>();
     private Queue<Passenger> boardedQueue = new LinkedList<Passenger>();
     private boolean readyToBoard,inQueue,checkDocs,docsShown,board;
-
+    
+    
+    private RepositoryInterface repo;
+    
     public synchronized void travelToAirport() 
     {
         Passenger passenger = ((Passenger)Thread.currentThread());
@@ -28,7 +31,9 @@ public class DepartureAirport {
     public synchronized void informPlaneReadyForBoarding() 
     {
         Pilot pilot = ((Pilot)Thread.currentThread());
-        pilot.setPilotState(PilotState.READY_FOR_BOARDING);
+        pilot.setPilotState(PilotState.READY_FOR_BOARDING);  
+        repo.boardingStarted();
+        repo.updatePilotState(PilotState.READY_FOR_BOARDING);
         System.out.println("Pilot:plane ready to board");
         readyToBoard = true;
         notifyAll();
@@ -53,7 +58,7 @@ public class DepartureAirport {
        
         Hostess hostess = ((Hostess)Thread.currentThread());
         hostess.setHostessState(HostessState.WAIT_FOR_PASSENGER);
-        
+        repo.updateHostessState(HostessState.WAIT_FOR_PASSENGER);
         return passengerQueue.size();
     }
     
@@ -62,7 +67,9 @@ public class DepartureAirport {
         Passenger passenger = ((Passenger)Thread.currentThread());
         System.out.println("Passenger:"+passenger.getPassengerId()+" has arrived");        
         System.out.println("Passanger:"+passenger.getPassengerId()+" at queue");
-        passenger.setPassengerState(PassengerState.IN_QUEUE);    
+        passenger.setPassengerState(PassengerState.IN_QUEUE); 
+        repo.inQueue();
+        repo.updatePassengerState(passenger.getPassengerId(), PassengerState.IN_QUEUE);
         passengerQueue.add(passenger);         
         notifyAll();
     }    
@@ -78,10 +85,12 @@ public class DepartureAirport {
             }
         }
         System.out.println("Hostess:  ready to check documents ");
-        passengerQueue.remove(); 
+        Passenger checkedPassenger =passengerQueue.remove(); 
         Hostess hostess = ((Hostess)Thread.currentThread());
         hostess.setHostessState(HostessState.CHECK_PASSENGER);
-        
+        repo.outQueue();
+        repo.passengerChecked(checkedPassenger.getPassengerId());
+        repo.updateHostessState(HostessState.CHECK_PASSENGER);
         checkDocs = true;
         notifyAll();        
     }
@@ -124,7 +133,7 @@ public class DepartureAirport {
         docsShown = false;
         Hostess hostess = ((Hostess)Thread.currentThread());
         hostess.setHostessState(HostessState.WAIT_FOR_PASSENGER);
-       
+        repo.updateHostessState(HostessState.WAIT_FOR_PASSENGER);
         System.out.println("Hostess:Passanger ready to board");
         System.out.println("PassengerQUEUE:_______>:"+passengerQueue.size());
         board = true;
@@ -152,6 +161,8 @@ public class DepartureAirport {
         System.out.println("Passenger:"+passenger.getPassengerId()+" boarding the plane");
         board= false;        
         passenger.setPassengerState(PassengerState.IN_FLIGHT);
+        repo.inPlane();
+        repo.updatePassengerState(passenger.getPassengerId(), PassengerState.IN_FLIGHT);
      }
     
     
@@ -161,15 +172,18 @@ public class DepartureAirport {
         System.out.println("Hostess:Waiting for plane to arrive");
         Hostess hostess = (Hostess)Thread.currentThread();
         hostess.setHostessState(HostessState.WAIT_FOR_FLIGHT);
-        
+        repo.updateHostessState(HostessState.WAIT_FOR_FLIGHT);
     }
 
     public  synchronized  void parkAtTransfeGate() 
     {
         Pilot pilot = ((Pilot)Thread.currentThread());
         pilot.setPilotState(PilotState.AT_TRANFER_GATE);
+        repo.updatePilotState(PilotState.AT_TRANFER_GATE);
         System.out.println("Pilot has parked at transfer gate");
     }
 
-   
+    public synchronized void setRepository(RepositoryInterface repository){
+        this.repo = repository;
+    }
 }

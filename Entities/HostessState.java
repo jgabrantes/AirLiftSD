@@ -10,10 +10,10 @@ package Entities;
  * @author jgabrantes
  */
 public enum HostessState {
-    WAIT_FOR_FLIGHT ("WFF"),
-    WAIT_FOR_PASSENGER ("WFP"),
-    CHECK_PASSENGER ("CP"),
-    READY_TO_FLY ("RTF");
+    WAIT_FOR_FLIGHT ("WTFL"),
+    WAIT_FOR_PASSENGER ("WTPS"),
+    CHECK_PASSENGER ("CKPS"),
+    READY_TO_FLY ("RDTF");
 
     private String state;
 

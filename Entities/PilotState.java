@@ -10,20 +10,22 @@ package Entities;
  * @author jgabrantes
  */
 public enum PilotState {
-    AT_TRANFER_GATE ("ATG"),
-    READY_FOR_BOARDING("RFB"),
-    WAIT_FOR_BOARDING("WFB"),
-    FLYING_FORWARD("FF"),
-    DEBOARDING("DB"),
-    FLYING_BACK("FB");
-    private String state;
+    AT_TRANFER_GATE ("ATRG"),
+    READY_FOR_BOARDING("RDFB"),
+    WAIT_FOR_BOARDING("WTFB"),
+    FLYING_FORWARD("FLFW"),
+    DEBOARDING("DRPP"),
+    FLYING_BACK("FLBK");
+    
+    
+    private final String state;
     private PilotState(String description){
         this.state = description;
     }
 
     @Override
     public String toString() {
-        return "PilotState{" + "state=" + state + '}';
+        return this.state;
     }
     
 }
